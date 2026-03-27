@@ -1,11 +1,23 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
-import AWS from "aws-sdk";
+import { S3Client } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 
-const s3 = new AWS.S3({
-    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
-    region: process.env.NEXT_PUBLIC_AWS_REGION,
+const awsRegion = process.env.AWS_REGION ?? process.env.NEXT_PUBLIC_AWS_REGION;
+const awsAccessKeyId = process.env.AWS_ACCESS_KEY_ID ?? process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID;
+const awsSecretAccessKey =
+    process.env.AWS_SECRET_ACCESS_KEY ?? process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY;
+const awsBucketName = process.env.AWS_S3_BUCKET_NAME ?? process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME;
+
+const s3 = new S3Client({
+    region: awsRegion,
+    credentials:
+        awsAccessKeyId && awsSecretAccessKey
+            ? {
+                  accessKeyId: awsAccessKeyId,
+                  secretAccessKey: awsSecretAccessKey,
+              }
+            : undefined,
 });
 
 // Тип для слайда
@@ -36,6 +48,10 @@ export async function GET() {
 // 🔹 Добавить слайд
 export async function POST(req: Request) {
     try {
+        if (!awsBucketName) {
+            throw new Error("AWS S3 bucket name is not configured");
+        }
+
         const formData = await req.formData();
         const title = formData.get("title") as string;
         const area = formData.get("area") as string;
@@ -50,16 +66,24 @@ export async function POST(req: Request) {
             const buffer = Buffer.from(await file.arrayBuffer());
             const key = `property-photos/${Date.now()}-${file.name}`;
 
-            const uploadResult = await s3
-                .upload({
-                    Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME!,
+            const upload = new Upload({
+                client: s3,
+                params: {
+                    Bucket: awsBucketName,
                     Key: key,
                     Body: buffer,
                     ContentType: file.type,
-                })
-                .promise();
+                },
+            });
 
-            uploadedUrls.push(uploadResult.Location);
+            const uploadResult = await upload.done();
+            const uploadedLocation =
+                uploadResult.Location ??
+                (awsRegion
+                    ? `https://${awsBucketName}.s3.${awsRegion}.amazonaws.com/${key}`
+                    : `https://${awsBucketName}.s3.amazonaws.com/${key}`);
+
+            uploadedUrls.push(uploadedLocation);
         }
 
         const [result] = await pool.query(
