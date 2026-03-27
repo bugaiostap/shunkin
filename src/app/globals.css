@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Benzin';
+  src: url('/fonts/benzin-bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "Gotham Pro";
+  src: url("/fonts/14080.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Benzin Semibold';
+  src: url('/fonts/benzin-semibold.woff2') format('woff2');
+  font-weight: semibold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Gotham Pro";
+  src: url("/fonts/gothampro.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --font-gotham: 'Gotham Pro', sans-serif;
+  --font-benzin: 'Benzin', sans-serif;
+  --font-benzin-semi: 'Benzin Semibold', sans-serif;
+}
+
+.font-benzin {
+  font-family: var(--font-benzin);
+}
+
+.font-benzin-semi {
+  font-family: var(--font-benzin-semi);
+}
+
+.font-gotham {
+  font-family: var(--font-gotham);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Benzin, Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #DDBC96, #926927);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
