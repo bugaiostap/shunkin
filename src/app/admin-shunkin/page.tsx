@@ -147,7 +147,7 @@ export default function AdminPage() {
             headers: { "Content-Type": "application/json" },
         });
 
-        if (res.ok) setSlides(slides.filter((s) => s.id !== id));
+        if (res.ok) setSlides(slides?.filter((s) => s.id !== id));
     };
 
     // ✅ Если не авторизован – показываем форму входа
@@ -202,7 +202,7 @@ export default function AdminPage() {
 
             {/* Таблица загруженных слайдов */}
             <ul className="mt-6 space-y-2">
-                {slides.map((slide) => (
+                {slides.length > 0 && slides?.map((slide) => (
                     <li key={slide.id} className="border p-4 flex justify-between items-center">
                         <div>
                             <h2 className="font-bold">{slide.title}</h2>

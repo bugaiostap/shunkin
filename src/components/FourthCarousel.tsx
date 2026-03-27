@@ -100,7 +100,7 @@ export default function Carousel() {
                 {/* Карусель */}
                 <div className="overflow-hidden rounded-lg max-w-7xl" ref={emblaRef}>
                     <div className="flex">
-                        {slides.map((slide, index) => (
+                        {slides.length > 0 && slides.map((slide, index) => (
                             <div key={index} className="flex-none w-full relative px-4 ">
                                 <div className="absolute font-gotham text-[16px] px-4 py-1 top-3 left-6  bg-gradient-to-r from-[#DDBC96] uppercase to-[#926927] rounded-[48px]">{slide.offer}</div>
                                 <Image

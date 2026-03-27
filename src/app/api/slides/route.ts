@@ -35,9 +35,11 @@ interface Slide {
 export async function GET() {
     try {
         const [rows] = await pool.query("SELECT * FROM slides");
+        console.log(rows);
+        
         const slides = (rows as any[]).map((slide) => ({
             ...slide,
-            images: JSON.parse(slide.images),
+            images: slide.images,
         }));
         return NextResponse.json(slides);
     } catch (error) {

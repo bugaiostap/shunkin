@@ -109,7 +109,7 @@ export default function CarouselDesktop() {
                     {/* Карусель */}
                     <div className="overflow-hidden rounded-lg ml-[10%] max-w-xl" ref={emblaRef}>
                         <div className="flex">
-                            {slides.map((slide, index) => (
+                            {slides.length > 0 && slides.map((slide, index) => (
                                 <div key={index} className="flex-none w-full  px-4 relative">
 
                                     <div className="absolute font-gotham text-[16px] px-4 py-1 top-3 left-6  bg-gradient-to-r from-[#DDBC96] uppercase to-[#926927] rounded-[48px]">{slide.offer}</div>
